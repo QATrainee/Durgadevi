@@ -1,6 +1,7 @@
 package recruiter;
 
 import java.util.List;
+import java.util.Properties;
 
 //import org.apache.bcel.generic.Select;
 import org.openqa.selenium.By;
@@ -11,160 +12,212 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class login 
 {
-	public static void main(String[] args) throws InterruptedException
+	static WebDriver d;
+
+	protected static WebElement xp(String xpath) 
+	{
+
+		return d.findElement(By.xpath(xpath));
+	}
+
+	protected static WebElement id(String id) 
+	{
+
+		return d.findElement(By.id(id));
+	}
+
+	protected static WebElement css(String cssSelector)
     {
-        WebDriver driver;
-        System.setProperty("webdriver.chrome.driver","D:\\backup\\chromedriver.exe");
-    	 driver = new ChromeDriver();
-        driver.get("http://uat.techfetch.com");
-        Thread.sleep(1000);
 
-        driver.findElement(By.xpath(".//*[@id='ucHeaderCtrl_divRecruiter']/a")).click();
+		return d.findElement(By.cssSelector(cssSelector));
+	}
 
-        driver.findElement(By.xpath(".//*[@id='emploginpop']")).click();
+	public static void main(String[] args) throws InterruptedException, Exception 
+	{
 
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("empcontentframe");
+		String workingdir;
+		workingdir = System.getProperty("user.dir");
+		System.setProperty("webdriver.chrome.driver", workingdir + "\\resource\\chromedriver.exe");
+		d = new ChromeDriver();
+		File file = new File(workingdir + "\\resource\\job.properties");
+		FileInputStream fileInput;
+		fileInput = new FileInputStream(file);
+		Properties prop = new Properties();
+		prop.load(fileInput);
+		d.get("http://uat.techfetch.com");
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-        driver.findElement(By.xpath(".//*[@id='txtemailid']")).sendKeys("trainee1@tiliconveli.com");
+		d.findElement(By.xpath(".//*[@id='ucHeaderCtrl_divRecruiter']/a")).click();
 
-        driver.findElement(By.xpath(".//*[@id='txtpwd']")).sendKeys("TV@123");
+		d.findElement(By.xpath(".//*[@id='emploginpop']")).click();
 
-        driver.findElement(By.xpath(".//*[@id='btnSubmit']")).click();
-        Thread.sleep(1000);
-        driver.switchTo().defaultContent();
-        
-      
-        driver.findElement(By.cssSelector("#LeftMenu10 > div.divLeftMenuTemplate.rc7 > img")).click();
-        Thread.sleep(1000);
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("Iframe2");
-        
-        
-        
-        
-       /* String[] months = new String[] { "Jan", "Feb", "Mar","Apr","May","jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		d.switchTo().defaultContent();
+		d.switchTo().frame("empcontentframe");
 
-        for (int i = 0; i < months.length; i++)
-        {
-        	driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[2]/div/input")).0.sendKeys(months[i]);
-        	Thread.sleep(5000);
-        	driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[2]/div/input")).clear();
-        	
-            System.out.println(months[i]);
-        }
+		d.findElement(By.xpath(".//*[@id='txtemailid']")).sendKeys("trainee1@tiliconveli.com");
 
-        String[] jobtitle = new String[] { "Java Developer", "c++", "QA Analyst","oracle Developer","ASP.Net" };
+		d.findElement(By.xpath(".//*[@id='txtpwd']")).sendKeys("TV@123");
 
-        for (int i = 0; i < jobtitle.length; i++)
-        {
-        	driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[3]/div/input")).sendKeys(jobtitle[i]);
-        	Thread.sleep(5000);
-        	driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[3]/div/input")).clear();
-        	
-            //System.out.println(months[i]);
-        }
-        */
-       
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[2]/div/input")).sendKeys("Dec");
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[3]/div/input")).sendKeys("ASP.Net");
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[4]/div/input")).sendKeys(" Bradfordsville, KY");
-        
-        Thread.sleep(3000);
-        
-        driver.findElement(By.xpath(".//*[@id='previewjob32684']/img")).click();
-        String window1 = driver.getWindowHandle();
-        System.out.println(window1);
+		d.findElement(By.xpath(".//*[@id='btnSubmit']")).click();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-        Set<String> windows =driver.getWindowHandles();
-        Iterator iterator = windows.iterator();
-        String x;
-        while(iterator.hasNext())
-        {
-        x = iterator.next().toString(); 
+		
+		
+		// @author:DURGADEVI
+		//preview
+		
+		d.switchTo().defaultContent();
+		css(prop.getProperty("jobmenu")).click();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		d.switchTo().defaultContent();
+		d.switchTo().frame("Iframe2");
+		xp(prop.getProperty("updateddate")).sendKeys(prop.getProperty("month"));
+		xp(prop.getProperty("jobtitle")).sendKeys(prop.getProperty("lang"));
+		xp(prop.getProperty("location")).sendKeys(prop.getProperty("cty4"));
+		d.manage().timeouts().implicitlyWait(7, TimeUnit.SECONDS);
 
-        System.out.println(x);
+		xp(prop.getProperty("preview")).click();
+		String window1 = d.getWindowHandle();
+		System.out.println(window1);
 
-        //for(String x:windows){
-        if(x.equals(window1)==false)
-        {
-        driver.switchTo().window(x); 
-        Thread.sleep(5000);
-        
-        driver.findElement(By.xpath(".//*[@id='quickapply']")).click();
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("applyemailframe");
-        Thread.sleep(5000);
-        new Select(driver.findElement(By.id("lstResume"))).selectByVisibleText("Doles Pierre (Pierre) [Active]");
-        driver.findElement(By.cssSelector("option[value=\"DP5637_7\"]")).click();
-        driver.findElement(By.id("txtCC")).clear();
-        driver.findElement(By.id("txtCC")).sendKeys("training2@tiliconveli.com");
-        driver.findElement(By.id("chkCL")).click();
-        Thread.sleep(3000);
-        driver.findElement(By.id("fileCL")).clear();
-       // driver.findElement(By.xpath(".//*[@id='uploaddiv']/div/div/div")).click();
-        Thread.sleep(3000);
-        driver.findElement(By.id("fileCL")).clear();
-        driver.findElement(By.id("fileCL")).sendKeys("C:\\Users\\mag8\\Desktop\\res.docx");
+		Set<String> windows = d.getWindowHandles();
+		Iterator iterator = windows.iterator();
+		String x;
+		while (iterator.hasNext()) {
+			x = iterator.next().toString();
 
-       // driver.findElement(By.id("uploadvalue2")).sendKeys("C:\\Users\\mag8\\Desktop\\res.docx");
-        driver.findElement(By.id("btnsendmail")).click();
-        Thread.sleep(2000);
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("applyemailframe");
-        driver.findElement(By.xpath(".//*[@id='btnClose1']")).click();
-       
-        //FORWARD
-        Thread.sleep(3000);
-        driver.switchTo().defaultContent();
-        driver.switchTo().window(x); 
-        driver.findElement(By.xpath(".//*[@id='forwardjob']")).click();
-        
-        
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("jsfwdjobcontentframe");
-        Thread.sleep(3000);
-        driver.findElement(By.xpath(".//*[@id='txtTo']")).sendKeys("training2@tiliconveli.com");
-        Thread.sleep(20000);
-        driver.findElement(By.xpath(".//*[@id='btnSend']")).click();
-        Thread.sleep(4000);
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("jsfwdjobcontentframe");
-        driver.findElement(By.xpath(".//*[@id='btnClose2']")).click();
-        }
-        }
-        Thread.sleep(2000);
-        driver.switchTo().window(window1);
-        driver.findElement(By.cssSelector("#LeftMenu10 > div.divLeftMenuTemplate.rc7 > img")).click();
-        Thread.sleep(4000);
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("Iframe2");
-        
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[2]/div/input")).clear();
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[3]/div/input")).clear();
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[4]/div/input")).clear();
-        Thread.sleep(5000);
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[2]/div/input")).sendKeys("Aug");
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[3]/div/input")).sendKeys("c++");
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/thead/tr[2]/td[4]/div/input")).sendKeys(" Calabasas, CA");
-        driver.findElement(By.xpath(".//*[@id='tblouterdiv']/table/tbody/tr[2]/td[9]/a/img")).click();
-        Thread.sleep(3000);
-        
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame("forwardjobframe") ;  
-        Thread.sleep(5000);
-         driver.findElement(By.cssSelector("#txtTo")).sendKeys("training2@tiliconveli.com");
-         Thread.sleep(20000);
-        //driver.findElement(By.xpath(".//*[@id='txtcode']")).sendKeys("");
-        driver.findElement(By.xpath(".//*[@id='btnSend']")).click();
-        Thread.sleep(3000);
-        driver.close();
-    }
+			System.out.println(x);
+
+			// for(String x:windows){
+			if (x.equals(window1) == false) {
+				d.switchTo().window(x);
+				d.manage().timeouts().implicitlyWait(35, TimeUnit.SECONDS);
+
+				xp(prop.getProperty("applynow")).click();
+				d.switchTo().defaultContent();
+				d.switchTo().frame("applyemailframe");
+				d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				new Select(d.findElement(By.id(prop.getProperty("selectfromprofile")))).selectByVisibleText("Doles Pierre (Pierre) [Active]");
+				css(prop.getProperty("optionvalue")).click();
+				id(prop.getProperty("cc")).clear();
+				id(prop.getProperty("cc")).sendKeys(prop.getProperty("tooo"));
+				id(prop.getProperty("coveringletter")).click();
+				d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				id(prop.getProperty("fileupload")).clear();
+				// d.findElement(By.xpath(".//*[@id='uploaddiv']/div/div/div")).click();
+				d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				id(prop.getProperty("fileupload")).clear();
+				id(prop.getProperty("fileupload")).sendKeys(prop.getProperty("path8"));
+
+				// d.findElement(By.id("uploadvalue2")).sendKeys("C:\\Users\\mag8\\Desktop\\res.docx");
+				id(prop.getProperty("sendemail")).click();
+				d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				d.switchTo().defaultContent();
+				d.switchTo().frame("applyemailframe");
+				xp(prop.getProperty("btnclose")).click();
+
+				// forward
+				Thread.sleep(5000);
+				d.switchTo().defaultContent();
+				d.switchTo().window(x);
+				xp(prop.getProperty("forwardjob")).click();
+
+				d.switchTo().defaultContent();
+				d.switchTo().frame("jsfwdjobcontentframe");
+				d.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+				xp(prop.getProperty("toaddr")).sendKeys(prop.getProperty("tooo"));
+				Thread.sleep(10000);
+				xp(prop.getProperty("sendmail")).click();
+				d.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+				d.switchTo().defaultContent();
+				d.switchTo().frame("jsfwdjobcontentframe");
+				xp(prop.getProperty("closebtn")).click();
+			}
+		}
+		
+		//FORWARD
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		d.switchTo().window(window1);
+		css(prop.getProperty("jobmenu")).click();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		d.switchTo().defaultContent();
+		d.switchTo().frame("Iframe2");
+
+		xp(prop.getProperty("updateddate")).clear();
+		xp(prop.getProperty("jobtitle")).clear();
+		xp(prop.getProperty("location")).clear();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		xp(prop.getProperty("updateddate")).sendKeys(prop.getProperty("month8"));
+		xp(prop.getProperty("jobtitle")).sendKeys(prop.getProperty("lang8"));
+		xp(prop.getProperty("location")).sendKeys(prop.getProperty("cty8"));
+		xp(prop.getProperty("fwd")).click();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		d.switchTo().frame(d.findElement(By.xpath(prop.getProperty("forwardmain"))));
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		xp(prop.getProperty("toaddr")).sendKeys(prop.getProperty("tooo"));
+		Thread.sleep(15000);
+		xp(prop.getProperty("sendmail")).click();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		xp(prop.getProperty("closebtn")).click();
+		d.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+
+		// EDIT
+
+		// @author surya Balapriya work name : edit
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		d.switchTo().defaultContent();
+		d.switchTo().frame("Iframe2");
+		xp(prop.getProperty("updateddate")).clear();
+		xp(prop.getProperty("jobtitle")).clear();
+		xp(prop.getProperty("location")).clear();
+		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		xp(prop.getProperty("edit")).click();
+		d.switchTo().defaultContent();
+		d.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+		d.switchTo().frame("Iframe3");
+
+		id(prop.getProperty("jobtitle5")).clear();
+		id(prop.getProperty("jobtitle5")).sendKeys(prop.getProperty("Title"));
+		Thread.sleep(1000);
+		id(prop.getProperty("skillreq")).clear();
+		id(prop.getProperty("skillreq")).sendKeys(prop.getProperty("Title"));
+		id(prop.getProperty("exlevel")).click();
+		id(prop.getProperty("exlevel1")).click();
+		id(prop.getProperty("exlevel2")).click();
+		id(prop.getProperty("exlevel3")).click();
+		id(prop.getProperty("exlevel4")).click();
+		d.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+
+		xp(prop.getProperty("permanenttype")).click();
+
+		id(prop.getProperty("Work1")).click();
+		Thread.sleep(1000);
+		id(prop.getProperty("PreferredEmployment5")).click();
+		Thread.sleep(1000);
+		new Select(id(prop.getProperty("splarea1"))).selectByVisibleText("Java, J2EE");
+		new Select(id(prop.getProperty("splskill1"))).selectByVisibleText("Java, J2EE");
+		id(prop.getProperty("domainlist0")).click();
+		id(prop.getProperty("domainlist2")).click();
+		id(prop.getProperty("preview1")).click();
+		Thread.sleep(3000);
+		d.findElement(By.linkText("closebutton")).click();
+		Thread.sleep(3000);
+		id(prop.getProperty("updatebutton")).click();
+		Thread.sleep(3000);
+		id(prop.getProperty("closebutton")).click();
+		d.close();
 
 	}
-    
+
+}
