@@ -85,9 +85,10 @@ public class login
 		xp(prop.getProperty("updateddate")).sendKeys(prop.getProperty("month"));
 		xp(prop.getProperty("jobtitle")).sendKeys(prop.getProperty("lang"));
 		xp(prop.getProperty("location")).sendKeys(prop.getProperty("cty4"));
-		d.manage().timeouts().implicitlyWait(7, TimeUnit.SECONDS);
-
+		//d.manage().timeouts().implicitlyWait(12, TimeUnit.SECONDS);
+Thread.sleep(1000);
 		xp(prop.getProperty("preview")).click();
+		Thread.sleep(1000);
 		String window1 = d.getWindowHandle();
 		System.out.println(window1);
 
@@ -97,13 +98,13 @@ public class login
 		while (iterator.hasNext()) {
 			x = iterator.next().toString();
 
-			System.out.println(x);
+			//System.out.println(x);
 
 			// for(String x:windows){
 			if (x.equals(window1) == false) {
 				d.switchTo().window(x);
 				d.manage().timeouts().implicitlyWait(35, TimeUnit.SECONDS);
-
+				System.out.println(x);
 				xp(prop.getProperty("applynow")).click();
 				d.switchTo().defaultContent();
 				d.switchTo().frame("applyemailframe");
@@ -137,14 +138,18 @@ public class login
 				d.switchTo().frame("jsfwdjobcontentframe");
 				d.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 				xp(prop.getProperty("toaddr")).sendKeys(prop.getProperty("tooo"));
-				Thread.sleep(10000);
-				xp(prop.getProperty("sendmail")).click();
+				Thread.sleep(3000);
+				xp(prop.getProperty("crossbtn1")).click();
 				d.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 				d.switchTo().defaultContent();
 				d.switchTo().frame("jsfwdjobcontentframe");
 				xp(prop.getProperty("closebtn")).click();
+				
+				d.switchTo().window(x);
+				d.close();
 			}
 		}
+		
 		
 		//FORWARD
 		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
@@ -166,8 +171,8 @@ public class login
 		d.switchTo().frame(d.findElement(By.xpath(prop.getProperty("forwardmain"))));
 		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		xp(prop.getProperty("toaddr")).sendKeys(prop.getProperty("tooo"));
-		Thread.sleep(15000);
-		xp(prop.getProperty("sendmail")).click();
+		Thread.sleep(1000);
+		xp(prop.getProperty("crossbtn")).click();
 		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		xp(prop.getProperty("closebtn")).click();
 		d.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
@@ -175,6 +180,7 @@ public class login
 		// EDIT
 
 		// @author surya Balapriya work name : edit
+		
 		d.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		d.switchTo().defaultContent();
 		d.switchTo().frame("Iframe2");
@@ -215,7 +221,7 @@ public class login
 		Thread.sleep(3000);
 		id(prop.getProperty("updatebutton")).click();
 		Thread.sleep(3000);
-		id(prop.getProperty("closebutton")).click();
+		d.findElement(By.linkText("closebutton")).click();
 		d.close();
 
 	}
